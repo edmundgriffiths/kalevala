@@ -1,0 +1,167 @@
+* This program is free software: you can redistribute it and/or modify it
+* under the terms of the GNU General Public License as published by the
+* Free Software Foundation, either version 3 of the License, or (at your
+* option) any later version.
+* This program is distributed in the hope that it will be useful, but
+* WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+* Public License for more details.
+* You should have received a copy of the GNU General Public License along
+* with this program. If not, see <https://www.gnu.org/licenses/>.
+
+* Kalevala scansion
+* Copyright 2024 Edmund Griffiths
+*
+* http://www.edmundgriffiths.com          edmund_griffiths@hotmail.com
+
+kalevala  start
+
+          entry go
+          extrn prout, card
+          empty a-umlaut, o-umlaut, consonant, ts, long-vowel, long, +
+                short, ambiguous, accent, broken, illicit
+
+vowel S 'aeiouy' /a-umlaut/ /o-umlaut/
+
+syllable S /long/ /short/ /ambiguous/
+
+go = <prout 'Enter one tetrameter at a time, or a blank line to exit.'> +
+     <read>
+
+read = <prout 'Tetrameter:'> <scan <card>>
+
+scan
+     =
+     eL = <prout <scansion <feet <syllables <letters eL>>>>> <read>
+
+letters
+     eL = <characters <blanks <umlauts eL>>>
+
+umlauts
+     'ä' eR = /a-umlaut/ <umlauts eR>
+     'Ä' eR = /a-umlaut/ <umlauts eR>
+     'ö' eR = /o-umlaut/ <umlauts eR>
+     'Ö' eR = /o-umlaut/ <umlauts eR>
+     sX eR = sX <umlauts eR>
+     =
+
+blanks
+     eA '-' eB = <blanks eA ' ' eB>
+     eA '\t' eB = <blanks eA ' ' eB>
+     eA '  ' eB = <blanks eA ' ' eB>
+     ' ' eA = <blanks eA>
+     eA ' ' = <blanks eA>
+     eX = ' ' eX
+
+characters
+     '’' eR = '' <characters eR>
+     s(' ' /a-umlaut/ /o-umlaut/ '')X eR = sX <characters eR>
+     s(L)X eR = <lowercase sX <alphabet>> <characters eR>
+     sX eR = <characters eR>
+     =
+
+alphabet = ('AEGHIJKLMNOPRSTUVY') 'aeghijklmnoprstuvy'
+
+lowercase
+     sX (sY eU) sX eL = sX
+     sX (sX eU) sZ eL = sZ
+     sX (sY eU) sZ eL = <lowercase sX (eU) eL>
+     sX eY = sX
+
+syllables
+     eL = <combinations <vowels <consonants <stress eL>>>>
+
+stress
+     ' ' eR = /accent/ <stress eR>
+     sX eR = sX <stress eR>
+     =
+
+consonants
+     eA 'ts' eB = <consonants eA /ts/ eB>
+     eA s((:vowel:)L)C eB = <consonants eA /consonant/ eB>
+     eA /accent/ /consonant/ eB = <consonants eA /consonant/ /accent/ eB>
+     eX = eX
+
+vowels
+     eA s(:vowel:)V sV eB = <vowels eA /long-vowel/ eB>
+     eA /accent/ s(('y' /a-umlaut/ /o-umlaut/):vowel:)V 'u' eB = +
+          <vowels eA /accent/ /long/ eB>
+     eA /accent/ s(('aou'):vowel:)V 'y' eB = <vowels eA /accent/ /long/ eB>
+     eA /accent/ 'ie' eB = <vowels eA /accent/ /long/ eB>
+     eA /accent/ 'uo' eB = <vowels eA /accent/ /long/ eB>
+     eA /accent/ 'y' /o-umlaut/ eB = <vowels eA /accent/ /long/ eB>
+     eA s(:vowel:)V 'i' eB = <vowels eA /long/ eB>
+     eA s(:vowel:)V eB = <vowels eA /short/ eB>
+     eX = eX
+
+combinations
+     eA /short/ /consonant/ /consonant/ eB = <combinations eA /long/ eB>
+     eA /short/ /ts/ eB = <combinations eA /ambiguous/ eB>
+     eA s('' /consonant/ /ts/)X eB = <combinations eA eB>
+     eA /accent/ sX /accent/ eB = <combinations eA sX /accent/ eB>
+     eA /accent/ s(:syllable:)X = <combinations eA sX /illicit/>
+     eA e(/accent/)X /long-vowel/ = <combinations eA /long/ /illicit/>
+     eA /long-vowel/ eB = <combinations eA /long/ eB>
+     eX = eX
+
+feet
+     eL = <ambiguities <firstfoot <trochees eL>>>
+
+trochees
+     eR e(/accent/)X s(:syllable:)1 e(/accent/)Y s(:syllable:)2 +
+          e(/illicit/)I = <trochees eR> (eX s1 eY s2 eI)
+     =
+     eX = (eX)
+
+firstfoot
+     (eA) (eB) w2 w3 w4 = (eA eB) w2 w3 w4
+     eX = eX
+
+ambiguities
+     (eA /ambiguous/ eB) eR = <ambiguities (eA /long/ eB) eR>
+     w1 eR = w1 <fit eR>
+
+fit
+     (eX /accent/ /ambiguous/) eR = <fit (eX /accent/ /short/) eR>
+     (eA /ambiguous/ eB) eR = <fit (eA /long/ eB) eR>
+     wX eR = wX <fit eR>
+     =
+
+scansion
+     eL = '    ' <accents eL> '\n    ' <quantities eL> +
+          <align '                    ' eL> <tetrameter eL>
+
+accents
+     (eA) eB = ' ' <accents eA> ' ' <accents eB> ' '
+     /accent/ sQ eR = '/' <accents eR>
+     s(:syllable:)Q eR = ' ' <accents eR>
+     eX =
+
+quantities
+     (eA) eB = '(' <quantities eA> ')' <quantities eB>
+     /accent/ eR = <quantities eR>
+     /long/ eR = '¯' <quantities eR>
+     /short/ eR = '˘' <quantities eR>
+     eX =
+
+align
+     ' ' v(' ')A (eB s(:syllable:)X eC) eR = <align vA (eC) eR>
+     '  ' v(' ')A w(B)X eR = <align vA eR>
+     v(' ')A = vA
+     ' ' eR = ' '
+
+tetrameter
+     w1 w2 w3 w4 = <metre w2 w3 w4>
+     w1 w2 w3 w4 eX = 'too long'
+     eX = 'too short'
+
+metre
+     eX (eY /illicit/) = 'illicit final syllable'
+     (/accent/ /short/ eX) eR = 'doesn''t scan'
+     (eX /accent/ /long/) eR = 'doesn''t scan'
+     (eX /accent/ /short/) eR = <metre eR /broken/>
+     (eX) eR = <metre eR>
+     v(/broken/)X = 'broken tetrameter'
+     = 'normal tetrameter'
+
+          end
