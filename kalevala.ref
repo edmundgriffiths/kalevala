@@ -115,6 +115,7 @@ trochees
 
 firstfoot
      (eA) (eB) w2 w3 w4 = (eA eB) w2 w3 w4
+     (e(/accent/)X s(:syllable:)Y) (eB) eR = (eX sY eB) eR
      eX = eX
 
 ambiguities
