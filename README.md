@@ -11,7 +11,7 @@ Type `refal2 kalevala.ref` at the command line (assuming your Refal interpreter 
 ```
 Enter one tetrameter at a time, or a blank line to exit.
 Tetrameter:
-Hyvä on hylheken eleä,
+Hyvä on hylkehen eleä,
      /    /    /         
     (˘˘¯)(¯˘)(˘˘)(˘˘)   broken tetrameter
 Tetrameter:
