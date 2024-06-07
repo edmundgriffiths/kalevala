@@ -1,0 +1,205 @@
+/* This program is free software: you can redistribute it and/or modify it
+   under the terms of the GNU General Public License as published by the
+   Free Software Foundation, either version 3 of the License, or (at your
+   option) any later version.
+   This program is distributed in the hope that it will be useful, but
+   WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+   Public License for more details.
+   You should have received a copy of the GNU General Public License along
+   with this program. If not, see <https://www.gnu.org/licenses/>. */
+
+/* Kalevala scansion
+   Copyright 2024 Edmund Griffiths */
+
+/* http://www.edmundgriffiths.com          edmund_griffiths@hotmail.com */
+
+$ENTRY Go {
+    = <Prout 'Enter one tetrameter at a time, or a blank line to exit.'>
+      <Read>
+}
+
+Read {
+    = <Prout 'Tetrameter:'>
+      <Scan <Card>>
+}
+
+Scan {
+    = ;
+    e.L = <Prout <Scansion <Feet <Syllables <Letters e.L>>>>>
+          <Read>
+}
+
+Class {
+    s.X, 'aeiouy' a-umlaut o-umlaut: e.1 s.X e.2 = vowel;
+    s.X, 'ghjklmnprstv': e.1 s.X e.2 = consonant;
+    s.X, long short ambiguous: e.1 s.X e.2 = syllable;
+    s.X =
+}
+
+Letters {
+    e.L = <Characters <Lower <Blanks <Umlauts e.L>>>>
+}
+
+Umlauts {
+    'ä' e.R = a-umlaut <Umlauts e.R>;
+    'Ä' e.R = a-umlaut <Umlauts e.R>;
+    'ö' e.R = o-umlaut <Umlauts e.R>;
+    'Ö' e.R = o-umlaut <Umlauts e.R>;
+    s.X e.R = s.X <Umlauts e.R>;
+    =
+}
+
+Blanks {
+    e.A '-' e.B = <Blanks e.A ' ' e.B>;
+    e.A '\t' e.B = <Blanks e.A ' ' e.B>;
+    e.A '  ' e.B = <Blanks e.A ' ' e.B>;
+    ' ' e.A = <Blanks e.A>;
+    e.A ' ' = <Blanks e.A>;
+    e.X = ' ' e.X
+}
+
+Characters {
+    '’' e.R = '\'' <Characters e.R>;
+    '\'' e.R = '\'' <Characters e.R>;
+    ' ' e.R = ' ' <Characters e.R>;
+    s.X e.R, <Class s.X>: vowel = s.X <Characters e.R>;
+    s.X e.R, <Class s.X>: consonant = s.X <Characters e.R>;
+    s.X e.R = <Characters e.R>;
+    =
+}
+
+Syllables {
+    e.L = <Syllabify <Combinations <Vowels <Consonants <Stress e.L>>>>>
+}
+
+Stress {
+    ' ' e.R = accent <Stress e.R>;
+    s.X e.R = s.X <Stress e.R>;
+    =
+}
+
+Consonants {
+    e.A 'ts' e.B = <Consonants e.A ts e.B>;
+    e.A s.C e.B, <Class s.C>: consonant = <Consonants e.A consonant e.B>;
+    e.A accent consonant e.B = <Consonants e.A consonant accent e.B>;
+    e.X = e.X
+}
+
+Vowels {
+    e.A s.V s.V e.B, <Class s.V>: vowel = <Vowels e.A long-vowel e.B>;
+    e.A accent s.V 'u' e.B, <Class s.V>: vowel, <Front s.V>: no
+        = <Vowels e.A accent long e.B>;
+    e.A accent s.V 'y' e.B, <Class s.V>: vowel, <Back s.V>: no
+        = <Vowels e.A accent long e.B>;
+    e.A accent 'ie' e.B = <Vowels e.A accent long e.B>;
+    e.A accent 'uo' e.B = <Vowels e.A accent long e.B>;
+    e.A accent 'y' o-umlaut e.B = <Vowels e.A accent long e.B>;
+    e.A s.V 'i' e.B, <Class s.V>: vowel = <Vowels e.A long e.B>;
+    e.A s.V e.B, <Class s.V>: vowel = <Vowels e.A short e.B>;
+    e.X = e.X
+}
+
+Front {
+    s.X, a-umlaut o-umlaut 'y': e.1 s.X e.2 = ;
+    s.X = no
+}
+
+Back {
+    s.X, 'aou': e.1 s.X e.2 = ;
+    s.X = no
+}
+
+Combinations {
+    e.A short consonant consonant e.B = <Combinations e.A long e.B>;
+    e.A short ts e.B = <Combinations e.A ambiguous e.B>;
+    e.A consonant e.B = <Combinations e.A e.B>;
+    e.A ts e.B = <Combinations e.A e.B>;
+    e.A '\'' e.B = <Combinations e.A e.B>;
+    e.A accent s.X accent e.B = <Combinations e.A s.X accent e.B>;
+    e.A accent s.X, <Class s.X>: syllable = <Combinations e.A s.X illicit>;
+    e.A accent long-vowel = <Combinations e.A long illicit>;
+    e.A long-vowel = <Combinations e.A long illicit>;
+    e.A long-vowel e.B = <Combinations e.A long e.B>;
+    e.X = e.X
+}
+
+Syllabify {
+    s.X illicit = (s.X illicit);
+    accent s.X e.R = (accent s.X) <Syllabify e.R>;
+    s.X e.R = (s.X) <Syllabify e.R>;
+    =
+}
+
+Feet {
+    e.L = <Ambiguities <Firstfoot <Trochees e.L>>>
+}
+
+Trochees {
+    e.R (e.X) (e.Y) = <Trochees e.R> (e.X e.Y);
+    = ;
+    e.X = e.X
+}
+
+Firstfoot {
+    (e.A) (e.B) t.2 t.3 t.4 = (e.A e.B) t.2 t.3 t.4;
+    (s.X) (e.Y) e.R = (s.X e.Y) e.R;
+    (accent s.X) (e.Y) e.R = (accent s.X e.Y) e.R;
+    e.X = e.X
+}
+
+Ambiguities {
+    (e.A ambiguous e.B) e.R = <Ambiguities (e.A long e.B) e.R>;
+    t.1 e.R = t.1 <Fit e.R>
+}
+
+Fit {
+    (e.X accent ambiguous) e.R = <Fit (e.X accent short) e.R>;
+    (e.A ambiguous e.B) e.R = <Fit (e.A long e.B) e.R>;
+    t.X e.R = t.X <Fit e.R>;
+    =
+}
+
+Scansion {
+    e.L = '    ' <Accents e.L> '\n    ' <Quantities e.L>
+          <Align '                    ' e.L> <Tetrameter e.L>
+}
+
+Accents {
+    (e.A) e.B = ' ' <Accents e.A> ' ' <Accents e.B> ' ';
+    accent s.Q e.R = '/' <Accents e.R>;
+    s.Q e.R, <Class s.Q>: syllable = ' ' <Accents e.R>;
+    e.X =
+}
+
+Quantities {
+    (e.A) e.B = '(' <Quantities e.A> ')' <Quantities e.B>;
+    accent e.R = <Quantities e.R>;
+    long e.R = '¯' <Quantities e.R>;
+    short e.R = '˘' <Quantities e.R>;
+    e.X =
+}
+
+Align {
+    '  ' e.A (e.B s.X e.C) e.R, <Class s.X>: syllable
+        = <Align ' ' e.A (e.C) e.R>;
+    '   ' e.A (e.X) e.R = <Align ' ' e.A e.R>;
+    e.R ' ' = e.R ' ';
+    ' ' e.R = ' '
+}
+
+Tetrameter {
+    t.1 t.2 t.3 t.4 = <Metre t.2 t.3 t.4>;
+    t.1 t.2 t.3 t.4 e.X = 'too long';
+    e.X = 'too short'
+}
+
+Metre {
+    e.X (e.Y illicit) = 'illicit final syllable';
+    (accent short e.X) e.R = 'doesn\'t scan';
+    (e.X accent long) e.R = 'doesn\'t scan';
+    (e.X accent short) e.R = <Metre e.R broken>;
+    (e.X) e.R = <Metre e.R>;
+    broken e.X = 'broken tetrameter';
+    = 'normal tetrameter'
+}
